@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <pre id="display"></pre>
+  </body>
+</html>
+<script>
+  const raw = "(1 (2 (4 5 6 (7) 108 (9)) 3))";
+
+  const raw2 = "(1 2 3 56)";
+
+  const raw3 = "(56 2 (123 99))";
+  //   i9;
+
+  const result3 = "56---2---123";
+
+  const result = "1---+---2\n    |\n    |\n    3";
+
+  const parsedString = [1, [2, [4, 5, 6, [7], 108, [9]], 3]];
+
+  const display = document.getElementById("display");
+  display.textContent = renderTree(parsedString);
+
+  //   parseTree(inputData);
+
+  function parseString(string = "") {}
+
+  function renderTree(nodes = [""]) {
+    const nodes = [[2, [4, 5, 6, [7], 108, [9]], 3], 9];
+
+    const stringsArr = [];
+
+    renderNode(nodes, 0);
+
+    function renderNode(nodes, level) {
+      for (let i = 0; i < nodes.length; i++) {
+        const curentNode = nodes[i];
+
+        // chi
+
+        if (Array.isArray(curentNode)) {
+          stringsArr[0].push("---+");
+        } else {
+          if (stringsArr.length) {
+            if (stringsArr[level]) {
+              if (typeof stringsArr[level] === "string") {
+                stringsArr[level] += "---" + node;
+              }
+            } else {
+              stringsArr[level] = node;
+            }
+          } else {
+            stringsArr = [node];
+          }
+        }
+      }
+    }
+
+    const strings = [
+      "1---+\n",
+      "    |\n",
+      "    |\n",
+      "    |\n",
+      "    2---+\n",
+      "    |   |\n",
+      "    |   |\n",
+      "    |   |\n",
+      "    3   4---5---6---+\n",
+      "        |           |\n",
+      "        |           |\n",
+      "        |           |\n",
+      "        108-+---9   7\n",
+    ];
+
+    const newString = strings.join("");
+
+    return newString;
+  }
+</script>
+<script>
+  function render(tree) {
+    let result = "";
+
+    const renderNode = (node, level = 0) => {
+      const indent = "  ".repeat(level);
+      result += `${indent}${node}\n`;
+
+      if (Array.isArray(node.children)) {
+        node.children.forEach((child) => {
+          renderNode(child, level + 1);
+        });
+      }
+    };
+
+    const parseTree = (treeStr) => {
+      const stack = [];
+      const nodes = treeStr.split(" ");
+
+      for (let i = 0; i < nodes.length; i++) {
+        const node = nodes[i];
+
+        if (node === ")") {
+          let children = [];
+          let child = stack.pop();
+
+          while (child !== "(") {
+            children.unshift(child);
+            child = stack.pop();
+          }
+
+          stack.push({ value: children });
+        } else {
+          stack.push(node);
+        }
+      }
+
+      return stack[0];
+    };
+
+    const parsedTree = parseTree(tree);
+    renderNode(parsedTree);
+
+    return result;
+  }
+</script>
